@@ -46,29 +46,58 @@ class _MyAppState extends State<MyApp> {
     futureQuote = fetchKanyeQuote();
   }
 
+  Future<void> refreshQuote() async {
+    setState(() {
+      futureQuote = fetchKanyeQuote();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fetch Data Example',
+      title: 'Kanye Rest',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.amber,
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Fetch Data Example'),
+          title: const Text('Kanye Rest'),
         ),
         body: Center(
-          child: FutureBuilder<Quote>(
-            future: futureQuote,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data!.quote);
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/kanye.jpeg', // Corrected path
+                width: 200, // specify width
+                height: 200, // specify height
+                fit: BoxFit.cover, // adjust how the image should be inscribed into the box
+              ),
+              SizedBox(height: 20),
+              FutureBuilder<Quote>(
+                future: futureQuote,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      snapshot.data!.quote,
+                      style: TextStyle(fontSize: 24), // set text size to 24
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      '${snapshot.error}',
+                      style: TextStyle(fontSize: 24), // set text size to 24
+                    );
+                  }
 
-              return const CircularProgressIndicator();
-            },
+                  return CircularProgressIndicator();
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: refreshQuote,
+                child: Text('Generate New Quote'),
+              ),
+            ],
           ),
         ),
       ),
